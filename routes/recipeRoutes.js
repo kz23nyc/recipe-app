@@ -36,6 +36,16 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+router.get('/recipe/:recipeId', async (req, res) => {
+    try {
+      const { recipeId } = req.params;
+      const comments = await Comment.find({ recipe: recipeId }).populate('recipe');
+      res.json(comments);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching comments", error });
+    }
+  });
+
 
 // PUT request to update a recipe by ID
 router.put('/:id', async (req, res) => {
@@ -56,13 +66,13 @@ router.patch("/:id", async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
     try {
-        const updatedCategory = await Category.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
-        if (!updatedCategory) {
-            return res.status(404).json({ message: "Category not found" });
+        const updatedRecipe = await Recipe.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        if (!updatedRecipe) {
+            return res.status(404).json({ message: "Recipe not found" });
         }
-        res.json(updatedCategory);
+        res.json(updatedRecipe);
     } catch (error) {
-        res.status(400).json({ message: "Error updating category", error });
+        res.status(400).json({ message: "Error updating recipe", error });
     }
 });
 

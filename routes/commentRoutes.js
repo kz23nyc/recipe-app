@@ -1,10 +1,18 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 import Comment from "../models/Comment.js";
 
 const router = new Router();
 
 router.post("/recipe/:recipeId", async (req, res) => {
   const { text, author } = req.body;
+  const { recipeId } = req.params;
+
+  // Check if the recipeId is a valid ObjectId
+  if (!mongoose.Types.ObjectId.isValid(recipeId)) {
+    return res.status(400).json({ message: 'Invalid recipe ID' });
+  }
+
   const newComment = new Comment({
     text,
     author,
@@ -18,7 +26,7 @@ router.post("/recipe/:recipeId", async (req, res) => {
   }
 });
 
-// Get all comments for a specific recipe
+// Get all comments for a specific recipe: recipeId
 router.get('/recipe/:recipeId', async (req, res) => {
   try {
     const { recipeId } = req.params;

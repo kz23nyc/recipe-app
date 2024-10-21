@@ -13,10 +13,16 @@ var categorySchema = new _mongoose["default"].Schema({
   name: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    minlength: 3,
+    maxlength: 150
   }
 }, {
   timestamps: true
+}); // Index for category name to improve performance on queries involving the name
+
+categorySchema.index({
+  name: 1
 });
 
 var _default = _mongoose["default"].model("Category", categorySchema);

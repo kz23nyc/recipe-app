@@ -7,49 +7,63 @@ exports["default"] = void 0;
 
 var _express = require("express");
 
+var _mongoose = _interopRequireDefault(require("mongoose"));
+
 var _Comment = _interopRequireDefault(require("../models/Comment.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var router = new _express.Router();
 router.post("/recipe/:recipeId", function _callee(req, res) {
-  var _req$body, text, author, newComment, savedComment;
+  var _req$body, text, author, recipeId, newComment, savedComment;
 
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _req$body = req.body, text = _req$body.text, author = _req$body.author;
+          recipeId = req.params.recipeId; // Check if the recipeId is a valid ObjectId
+
+          if (_mongoose["default"].Types.ObjectId.isValid(recipeId)) {
+            _context.next = 4;
+            break;
+          }
+
+          return _context.abrupt("return", res.status(400).json({
+            message: 'Invalid recipe ID'
+          }));
+
+        case 4:
           newComment = new _Comment["default"]({
             text: text,
             author: author,
             recipe: req.params.recipeId
           });
-          _context.prev = 2;
-          _context.next = 5;
+          _context.prev = 5;
+          _context.next = 8;
           return regeneratorRuntime.awrap(newComment.save());
 
-        case 5:
+        case 8:
           savedComment = _context.sent;
           res.status(201).json(savedComment);
-          _context.next = 12;
+          _context.next = 15;
           break;
 
-        case 9:
-          _context.prev = 9;
-          _context.t0 = _context["catch"](2);
+        case 12:
+          _context.prev = 12;
+          _context.t0 = _context["catch"](5);
           res.status(400).json({
             message: "Error posting comment",
             error: _context.t0
           });
 
-        case 12:
+        case 15:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[2, 9]]);
-}); // Get all comments for a specific recipe
+  }, null, null, [[5, 12]]);
+}); // Get all comments for a specific recipe: recipeId
 
 router.get('/recipe/:recipeId', function _callee2(req, res) {
   var recipeId, comments;

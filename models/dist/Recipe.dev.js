@@ -31,7 +31,7 @@ var recipeSchema = new _mongoose["default"].Schema({
     required: true
   }],
   categories: [{
-    type: String,
+    type: _mongoose["default"].Schema.Types.ObjectId,
     ref: 'Category'
   }]
 }, {

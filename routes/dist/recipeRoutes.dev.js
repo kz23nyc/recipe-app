@@ -120,119 +120,153 @@ router.get("/:id", function _callee3(req, res) {
       }
     }
   }, null, null, [[1, 11]]);
-}); // PUT request to update a recipe by ID
-
-router.put('/:id', function _callee4(req, res) {
-  var id, updatedData, updatedRecipe;
+});
+router.get('/recipe/:recipeId', function _callee4(req, res) {
+  var recipeId, comments;
   return regeneratorRuntime.async(function _callee4$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
+          _context4.prev = 0;
+          recipeId = req.params.recipeId;
+          _context4.next = 4;
+          return regeneratorRuntime.awrap(Comment.find({
+            recipe: recipeId
+          }).populate('recipe'));
+
+        case 4:
+          comments = _context4.sent;
+          res.json(comments);
+          _context4.next = 11;
+          break;
+
+        case 8:
+          _context4.prev = 8;
+          _context4.t0 = _context4["catch"](0);
+          res.status(500).json({
+            message: "Error fetching comments",
+            error: _context4.t0
+          });
+
+        case 11:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  }, null, null, [[0, 8]]);
+}); // PUT request to update a recipe by ID
+
+router.put('/:id', function _callee5(req, res) {
+  var id, updatedData, updatedRecipe;
+  return regeneratorRuntime.async(function _callee5$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
           id = req.params.id;
           updatedData = req.body;
-          _context4.prev = 2;
-          _context4.next = 5;
+          _context5.prev = 2;
+          _context5.next = 5;
           return regeneratorRuntime.awrap(_Recipe["default"].findByIdAndUpdate(id, updatedData, {
             "new": true
           }));
 
         case 5:
-          updatedRecipe = _context4.sent;
+          updatedRecipe = _context5.sent;
           res.status(200).json(updatedRecipe);
-          _context4.next = 12;
+          _context5.next = 12;
           break;
 
         case 9:
-          _context4.prev = 9;
-          _context4.t0 = _context4["catch"](2);
+          _context5.prev = 9;
+          _context5.t0 = _context5["catch"](2);
           res.status(500).json({
             error: 'Failed to update recipe'
           });
 
         case 12:
         case "end":
-          return _context4.stop();
+          return _context5.stop();
       }
     }
   }, null, null, [[2, 9]]);
 }); // PATCH
 
-router.patch("/:id", function _callee5(req, res) {
-  var id, updates, updatedCategory;
-  return regeneratorRuntime.async(function _callee5$(_context5) {
+router.patch("/:id", function _callee6(req, res) {
+  var id, updates, updatedRecipe;
+  return regeneratorRuntime.async(function _callee6$(_context6) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context6.prev = _context6.next) {
         case 0:
           id = req.params.id;
           updates = req.body;
-          _context5.prev = 2;
-          _context5.next = 5;
-          return regeneratorRuntime.awrap(Category.findByIdAndUpdate(id, updates, {
+          _context6.prev = 2;
+          _context6.next = 5;
+          return regeneratorRuntime.awrap(_Recipe["default"].findByIdAndUpdate(id, updates, {
             "new": true,
             runValidators: true
           }));
 
         case 5:
-          updatedCategory = _context5.sent;
+          updatedRecipe = _context6.sent;
 
-          if (updatedCategory) {
-            _context5.next = 8;
+          if (updatedRecipe) {
+            _context6.next = 8;
             break;
           }
 
-          return _context5.abrupt("return", res.status(404).json({
-            message: "Category not found"
+          return _context6.abrupt("return", res.status(404).json({
+            message: "Recipe not found"
           }));
 
         case 8:
-          res.json(updatedCategory);
-          _context5.next = 14;
+          res.json(updatedRecipe);
+          _context6.next = 14;
           break;
 
         case 11:
-          _context5.prev = 11;
-          _context5.t0 = _context5["catch"](2);
+          _context6.prev = 11;
+          _context6.t0 = _context6["catch"](2);
           res.status(400).json({
-            message: "Error updating category",
-            error: _context5.t0
+            message: "Error updating recipe",
+            error: _context6.t0
           });
 
         case 14:
         case "end":
-          return _context5.stop();
+          return _context6.stop();
       }
     }
   }, null, null, [[2, 11]]);
 });
-router["delete"]("/:id", function _callee6(req, res) {
+router["delete"]("/:id", function _callee7(req, res) {
   var id;
-  return regeneratorRuntime.async(function _callee6$(_context6) {
+  return regeneratorRuntime.async(function _callee7$(_context7) {
     while (1) {
-      switch (_context6.prev = _context6.next) {
+      switch (_context7.prev = _context7.next) {
         case 0:
-          _context6.prev = 0;
+          _context7.prev = 0;
           id = req.params.id;
-          _context6.next = 4;
+          _context7.next = 4;
           return regeneratorRuntime.awrap(_Recipe["default"].findByIdAndDelete(id));
 
         case 4:
           res.status(200).json({
             message: "Recipe deleted successfully"
           });
-          _context6.next = 10;
+          _context7.next = 10;
           break;
 
         case 7:
-          _context6.prev = 7;
-          _context6.t0 = _context6["catch"](0);
+          _context7.prev = 7;
+          _context7.t0 = _context7["catch"](0);
           res.status(500).json({
             message: "Error deleting recipe",
-            error: _context6.t0
+            error: _context7.t0
           });
 
         case 10:
         case "end":
-          return _context6.stop();
+          return _context7.stop();
       }
     }
   }, null, null, [[0, 7]]);
