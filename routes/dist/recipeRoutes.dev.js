@@ -1,0 +1,241 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _express = _interopRequireDefault(require("express"));
+
+var _Recipe = _interopRequireDefault(require("../models/Recipe.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var router = _express["default"].Router();
+
+router.post("/", function _callee(req, res) {
+  var newRecipe;
+  return regeneratorRuntime.async(function _callee$(_context) {
+    while (1) {
+      switch (_context.prev = _context.next) {
+        case 0:
+          _context.prev = 0;
+          _context.next = 3;
+          return regeneratorRuntime.awrap(_Recipe["default"].create(req.body));
+
+        case 3:
+          newRecipe = _context.sent;
+          res.status(201).json(newRecipe);
+          _context.next = 10;
+          break;
+
+        case 7:
+          _context.prev = 7;
+          _context.t0 = _context["catch"](0);
+          res.status(400).json({
+            message: "Error creating new recipe",
+            error: _context.t0
+          });
+
+        case 10:
+        case "end":
+          return _context.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+});
+router.get("/", function _callee2(req, res) {
+  var recipes;
+  return regeneratorRuntime.async(function _callee2$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          _context2.next = 3;
+          return regeneratorRuntime.awrap(_Recipe["default"].find());
+
+        case 3:
+          recipes = _context2.sent;
+          res.json(recipes);
+          _context2.next = 10;
+          break;
+
+        case 7:
+          _context2.prev = 7;
+          _context2.t0 = _context2["catch"](0);
+          res.status(500).json({
+            message: "Error getting recipes",
+            error: _context2.t0
+          });
+
+        case 10:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+});
+router.get("/:id", function _callee3(req, res) {
+  var recipe;
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          console.log("Requested ID:", req.params.id); // Log the requested ID
+
+          _context3.prev = 1;
+          _context3.next = 4;
+          return regeneratorRuntime.awrap(_Recipe["default"].findById(req.params.id));
+
+        case 4:
+          recipe = _context3.sent;
+          console.log("Found Recipe:", recipe); // Log the found recipe
+
+          if (recipe) {
+            _context3.next = 8;
+            break;
+          }
+
+          return _context3.abrupt("return", res.status(404).json({
+            message: "Recipe not found"
+          }));
+
+        case 8:
+          res.json(recipe);
+          _context3.next = 15;
+          break;
+
+        case 11:
+          _context3.prev = 11;
+          _context3.t0 = _context3["catch"](1);
+          console.error("Error fetching recipe:", _context3.t0);
+          res.status(500).json({
+            message: "Error fetching recipe",
+            error: _context3.t0
+          });
+
+        case 15:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, null, null, [[1, 11]]);
+}); // PUT request to update a recipe by ID
+
+router.put('/:id', function _callee4(req, res) {
+  var id, updatedData, updatedRecipe;
+  return regeneratorRuntime.async(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          id = req.params.id;
+          updatedData = req.body;
+          _context4.prev = 2;
+          _context4.next = 5;
+          return regeneratorRuntime.awrap(_Recipe["default"].findByIdAndUpdate(id, updatedData, {
+            "new": true
+          }));
+
+        case 5:
+          updatedRecipe = _context4.sent;
+          res.status(200).json(updatedRecipe);
+          _context4.next = 12;
+          break;
+
+        case 9:
+          _context4.prev = 9;
+          _context4.t0 = _context4["catch"](2);
+          res.status(500).json({
+            error: 'Failed to update recipe'
+          });
+
+        case 12:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  }, null, null, [[2, 9]]);
+}); // PATCH
+
+router.patch("/:id", function _callee5(req, res) {
+  var id, updates, updatedCategory;
+  return regeneratorRuntime.async(function _callee5$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          id = req.params.id;
+          updates = req.body;
+          _context5.prev = 2;
+          _context5.next = 5;
+          return regeneratorRuntime.awrap(Category.findByIdAndUpdate(id, updates, {
+            "new": true,
+            runValidators: true
+          }));
+
+        case 5:
+          updatedCategory = _context5.sent;
+
+          if (updatedCategory) {
+            _context5.next = 8;
+            break;
+          }
+
+          return _context5.abrupt("return", res.status(404).json({
+            message: "Category not found"
+          }));
+
+        case 8:
+          res.json(updatedCategory);
+          _context5.next = 14;
+          break;
+
+        case 11:
+          _context5.prev = 11;
+          _context5.t0 = _context5["catch"](2);
+          res.status(400).json({
+            message: "Error updating category",
+            error: _context5.t0
+          });
+
+        case 14:
+        case "end":
+          return _context5.stop();
+      }
+    }
+  }, null, null, [[2, 11]]);
+});
+router["delete"]("/:id", function _callee6(req, res) {
+  var id;
+  return regeneratorRuntime.async(function _callee6$(_context6) {
+    while (1) {
+      switch (_context6.prev = _context6.next) {
+        case 0:
+          _context6.prev = 0;
+          id = req.params.id;
+          _context6.next = 4;
+          return regeneratorRuntime.awrap(_Recipe["default"].findByIdAndDelete(id));
+
+        case 4:
+          res.status(200).json({
+            message: "Recipe deleted successfully"
+          });
+          _context6.next = 10;
+          break;
+
+        case 7:
+          _context6.prev = 7;
+          _context6.t0 = _context6["catch"](0);
+          res.status(500).json({
+            message: "Error deleting recipe",
+            error: _context6.t0
+          });
+
+        case 10:
+        case "end":
+          return _context6.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+});
+var _default = router;
+exports["default"] = _default;

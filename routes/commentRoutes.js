@@ -1,0 +1,42 @@
+import { Router } from "express";
+import Comment from "../models/Comment.js";
+
+const router = new Router();
+
+router.post("/recipe/:recipeId", async (req, res) => {
+  const { text, author } = req.body;
+  const newComment = new Comment({
+    text,
+    author,
+    recipe: req.params.recipeId
+  });
+  try {
+    const savedComment = await newComment.save();
+    res.status(201).json(savedComment);
+  } catch (error) {
+    res.status(400).json({ message: "Error posting comment", error });
+  }
+});
+
+// Get all comments for a specific recipe
+router.get('/recipe/:recipeId', async (req, res) => {
+  try {
+    const { recipeId } = req.params;
+    const comments = await Comment.find({ recipe: recipeId }).populate('recipe');
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching comments", error });
+  }
+});
+
+// Get all comments
+router.get('/', async (req, res) => {
+  try {
+    const comments = await Comment.find({}).populate('recipe');  
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching comments", error });
+  }
+});
+
+export default router;
